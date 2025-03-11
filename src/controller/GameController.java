@@ -4,7 +4,7 @@ import model.Board;
 import model.Move;
 import model.Minimax;
 import view.GameView;
-import java.util.List; // เพิ่มการนำเข้า List
+import java.util.List;
 
 public class GameController {
     private Board board;
@@ -16,6 +16,7 @@ public class GameController {
         this.board = board;
         this.minimax = new Minimax();
         view.setController(this);
+        System.out.println("Controller initialized.");
     }
 
     public void handlePlayerMove(int fromRow, int fromCol, int toRow, int toCol) {
@@ -41,6 +42,7 @@ public class GameController {
 
     private void computerMove() {
         try {
+            System.out.println("Controller: Starting computer move...");
             Move bestMove = minimax.findBestMove(board);
             if (bestMove != null) {
                 board.makeMove(bestMove);

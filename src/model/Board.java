@@ -14,21 +14,21 @@ public class Board {
     }
 
     private void initializeBoard() {
-        // ขาว (ผู้เล่น)
-        board[0][0] = board[0][7] = 'r'; // เม็ด
-        board[0][1] = board[0][6] = 'n'; // ม้า
-        board[0][2] = board[0][5] = 'b'; // โคน
-        board[0][3] = 'q'; // เรือ
-        board[0][4] = 'k'; // ขุน
-        for (int i = 0; i < 8; i++) board[2][i] = 'p'; // เบี้ย
+        // ฝั่งขาว (ผู้เล่น) อยู่ด้านล่าง (แถว 7-5)
+        board[7][0] = board[7][7] = 'r'; // เม็ด
+        board[7][1] = board[7][6] = 'n'; // ม้า
+        board[7][2] = board[7][5] = 'b'; // โคน
+        board[7][3] = 'q'; // เรือ
+        board[7][4] = 'k'; // ขุน
+        for (int i = 0; i < 8; i++) board[5][i] = 'p'; // เบี้ย
 
-        // ดำ (คอมพิวเตอร์)
-        board[7][0] = board[7][7] = 'R'; // เม็ด
-        board[7][1] = board[7][6] = 'N'; // ม้า
-        board[7][2] = board[7][5] = 'B'; // โคน
-        board[7][3] = 'Q'; // เรือ
-        board[7][4] = 'K'; // ขุน
-        for (int i = 0; i < 8; i++) board[5][i] = 'P'; // เบี้ย
+        // ฝั่งดำ (คอมพิวเตอร์) อยู่ด้านบน (แถว 0-2)
+        board[0][0] = board[0][7] = 'R'; // เม็ด
+        board[0][1] = board[0][6] = 'N'; // ม้า
+        board[0][2] = board[0][5] = 'B'; // โคน
+        board[0][3] = 'Q'; // เรือ
+        board[0][4] = 'K'; // ขุน
+        for (int i = 0; i < 8; i++) board[2][i] = 'P'; // เบี้ย
     }
 
     public char[][] getBoard() {
@@ -66,7 +66,10 @@ public class Board {
 
     public List<Move> getLegalMoves(int row, int col) {
         List<Move> moves = new ArrayList<>();
-        addPieceMoves(moves, row, col);
+        char piece = board[row][col];
+        if (piece != ' ' && (isWhiteTurn == Character.isLowerCase(piece))) { // ตรวจสอบตา
+            addPieceMoves(moves, row, col);
+        }
         return moves;
     }
 
@@ -77,7 +80,7 @@ public class Board {
 
         switch (Character.toLowerCase(piece)) {
             case 'p': // เบี้ย
-                int direction = isWhite ? -1 : 1;
+                int direction = isWhite ? 1 : -1; // ขาวเดินลง (เพิ่ม row), ดำเดินขึ้น (ลด row)
                 if (isValid(row + direction, col) && (board[row + direction][col] == ' ' || isEnemy(row + direction, col, isWhite))) {
                     moves.add(new Move(row, col, row + direction, col));
                 }

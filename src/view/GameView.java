@@ -30,27 +30,17 @@ public class GameView extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                try {
-                    drawBoard(g);
-                } catch (Exception e) {
-                    System.err.println("Error in paintComponent: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                drawBoard(g);
             }
         };
         boardPanel.setPreferredSize(new Dimension(8 * TILE_SIZE, 8 * TILE_SIZE));
         boardPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-                try {
-                    int row = e.getY() / TILE_SIZE;
-                    int col = e.getX() / TILE_SIZE;
-                    System.out.println("Mouse clicked at: (" + row + ", " + col + ")");
-                    handleClick(row, col);
-                } catch (Exception ex) {
-                    System.err.println("Error in mousePressed: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
+                int row = 7 - (e.getY() / TILE_SIZE); // กลับด้าน: แถว 7 ล่าง, 0 บน
+                int col = e.getX() / TILE_SIZE;
+                System.out.println("Mouse clicked at: (" + row + ", " + col + ")");
+                handleClick(row, col);
             }
         });
         add(boardPanel, BorderLayout.CENTER);
@@ -59,17 +49,18 @@ public class GameView extends JFrame {
     private void drawBoard(Graphics g) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
+                int displayRow = 7 - i; // กลับด้าน: แถว 7 วาดล่าง
                 g.setColor((i + j) % 2 == 0 ? Color.WHITE : Color.GRAY);
-                g.fillRect(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                g.fillRect(j * TILE_SIZE, displayRow * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 if (selectedRow == i && selectedCol == j) {
                     g.setColor(Color.YELLOW);
-                    g.fillRect(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    g.fillRect(j * TILE_SIZE, displayRow * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
                 if (legalMoves != null) {
                     for (Move move : legalMoves) {
                         if (move != null && move.toRow == i && move.toCol == j) {
                             g.setColor(Color.GREEN);
-                            g.fillRect(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                            g.fillRect(j * TILE_SIZE, displayRow * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                         }
                     }
                 }
@@ -78,7 +69,7 @@ public class GameView extends JFrame {
                     g.setColor(Color.BLACK);
                     Font font = new Font("Arial", Font.BOLD, 20);
                     g.setFont(font);
-                    g.drawString(String.valueOf(piece), j * TILE_SIZE + TILE_SIZE / 2 - 5, i * TILE_SIZE + TILE_SIZE / 2 + 5);
+                    g.drawString(String.valueOf(piece), j * TILE_SIZE + TILE_SIZE / 2 - 5, displayRow * TILE_SIZE + TILE_SIZE / 2 + 5);
                 }
             }
         }
